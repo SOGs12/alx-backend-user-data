@@ -12,28 +12,21 @@ import os
 app = Flask(__name__)
 app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
-
 auth = None
 AUTH_TYPE = os.getenv("AUTH_TYPE")
-
-
 if AUTH_TYPE == "auth":
     from api.v1.auth.auth import Auth
     auth = Auth()
-
-if AUTH_TYPE == 'basic_auth':
+elif AUTH_TYPE == "basic_auth":
     from api.v1.auth.basic_auth import BasicAuth
     auth = BasicAuth()
-
-if AUTH_TYPE == 'session_auth':
+elif AUTH_TYPE == "session_auth":
     from api.v1.auth.session_auth import SessionAuth
     auth = SessionAuth()
-
-if AUTH_TYPE == 'session_exp_auth':
+elif AUTH_TYPE == "session_exp_auth":
     from api.v1.auth.session_exp_auth import SessionExpAuth
     auth = SessionExpAuth()
-
-if AUTH_TYPE == 'session_db_auth':
+elif AUTH_TYPE == "session_db_auth":
     from api.v1.auth.session_db_auth import SessionDBAuth
     auth = SessionDBAuth()
 
@@ -70,19 +63,14 @@ def not_found(error) -> str:
 
 @app.errorhandler(401)
 def unauthorized(error) -> str:
-    """Unauthorized handler"""
+    """ Request unauthorized handler
+    """
     return jsonify({"error": "Unauthorized"}), 401
 
 
 @app.errorhandler(403)
-def not_allowed(error) -> str:
-    """_summary_
-
-    Args:
-        error (_type_): _description_
-
-    Returns:
-        str: _description_
+def forbidden(error) -> str:
+    """ Request unauthorized handler
     """
     return jsonify({"error": "Forbidden"}), 403
 
